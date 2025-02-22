@@ -1,0 +1,16 @@
+{
+  "name": "rtmp-bitrate-monitor",
+  "version": "1.0.0",
+  "description": "RTMP sunucusundan bitrate bilgisini çeken Node.js uygulaması",
+  "main": "index.js",
+  "scripts": {
+    "start": "bun index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "fast-xml-parser": "^5.0.1",
+    "install": "^0.13.0",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "module"
+}
