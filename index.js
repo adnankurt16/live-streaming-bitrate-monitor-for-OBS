@@ -25,7 +25,6 @@ app.get("/stats", async (req, res) => {
       return;
     }
     const response = await fetch(STATS_URL);
-    console.log(response);
     if (!response.ok) {
       res.status(500).json({ error: "Failed to retrieve stats" });
       return;
