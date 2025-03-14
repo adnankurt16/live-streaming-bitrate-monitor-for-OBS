@@ -1,7 +1,7 @@
 {
-  "name": "rtmp-bitrate-monitor",
+  "name": "bitrate-monitor-obs",
   "version": "1.0.0",
-  "description": "RTMP sunucusundan bitrate bilgisini çeken Node.js uygulaması",
+  "description": "A real-time bitrate monitor for live streaming, supporting both RTMP and SRT protocols.",
   "main": "index.js",
   "scripts": {
     "start": "bun index.js"
