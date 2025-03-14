@@ -25,15 +25,29 @@ app.get("/stats", async (req, res) => {
       return;
     }
     const response = await fetch(STATS_URL);
+    console.log(response);
+    if (!response.ok) {
+      res.status(500).json({ error: "Failed to retrieve stats" });
+      return;
+    }
     if (TYPE == "rtmp") {
       const text = await response.text();
       const parser = new XMLParser();
       const xml = parser.parse(text);
-      const bitrate = xml.rtmp.server.application.live.stream.find((stream) => stream.name == STREAM_ID).bw_video / 1024;
+      const stream = xml.rtmp.server.application.live.stream.find((stream) => stream.name == STREAM_ID);
+      if (!stream) {
+        res.status(400).json({ error: "Stream not found" });
+        return;
+      }
+      const bitrate = stream.bw_video / 1024;
       res.json({ bitrate });
       return;
     } else if (TYPE == "srt") {
       const json = await response.json();
+      if (!json.publishers[STREAM_ID]) {
+        res.status(400).json({ error: "Stream not found" });
+        return;
+      }
       const bitrate = json.publishers[STREAM_ID].bitrate;
       res.json({ bitrate });
       return;
