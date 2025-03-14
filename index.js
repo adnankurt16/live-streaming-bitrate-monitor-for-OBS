@@ -11,8 +11,8 @@ const PORT = 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 📌 Statik dosyaları sun (index.html ve diğerlerini)
-app.use(express.static(__dirname));
+// 📌 Serve the public directory
+app.use(express.static(__dirname + "/public"));
 
 // 📌 Bitrate bilgisini JSON formatında dönen API
 app.get("/stats", async (req, res) => {
