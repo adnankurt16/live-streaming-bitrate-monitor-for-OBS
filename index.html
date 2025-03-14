@@ -1,40 +1,58 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bitrate Monitor</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0);
-            color: white;
-            font-size: 24px;
-        }
-        #bitrate {
-            font-weight: bold;
-            font-size: 32px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0);
+        color: white;
+        font-size: 24px;
+      }
+      #bitrate {
+        font-weight: bold;
+        font-size: 32px;
+      }
     </style>
-</head>
-<body>
-    <p>Bitrate: <span id="bitrate">Yükleniyor...</span> kbps</p>
+  </head>
+  <body>
+    <p>Bitrate: <span id="bitrate">Yükleniyor...</span></p>
 
     <script>
-        async function updateBitrate() {
-            try {
-                const response = await fetch("http://localhost:3000/stats");
-                const data = await response.json();
-                document.getElementById("bitrate").innerText = (data.bitrate / 1000).toFixed(2);
-            } catch (error) {
-                console.error("Bitrate çekilemedi:", error);
-                document.getElementById("bitrate").innerText = "Bağlantı yok";
+      async function updateBitrate() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const type = params.get("type");
+          const statsUrl = params.get("statsUrl");
+          const streamId = params.get("streamId");
+          if (!type || !statsUrl || !streamId) {
+            throw new Error("Type, statsUrl veya streamId bulunamadı");
+          }
+          const response = await fetch(
+            "http://localhost:3000/stats" + "?type=" + type + "&statsUrl=" + statsUrl + "&streamId=" + streamId,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
+          );
+          const data = await response.json();
+          if (!data.bitrate) {
+            throw new Error("Bitrate not found in response");
+          }
+          // Handle the existing bitrate case if data.bitrate is found
+          document.getElementById("bitrate").innerText = data.bitrate + " kbps"; // Update the bitrate display to include units
+        } catch (error) {
+          console.error("Bitrate çekilemedi:", error);
+          document.getElementById("bitrate").innerText = "N/A";
         }
+      }
 
-        setInterval(updateBitrate, 3000); // Her 3 saniyede bir güncelle
-        updateBitrate(); // Sayfa yüklendiğinde bir defa çalıştır
+      setInterval(updateBitrate, 1000); // Her 1 saniyede bir güncelle
     </script>
-</body>
+  </body>
 </html>
